@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node --prefer-ts-exts bin/monitor-cripto-on-mexc.ts",
+  "app": "npx ts-node --prefer-ts-exts bin/WS-MEXC.ts",
   "watch": {
     "include": [
       "**"
