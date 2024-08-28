@@ -1,8 +1,8 @@
 {
-  "name": "monitor-cripto-on-mexc",
+  "name": "ec2-instanceApp",
   "version": "0.1.0",
   "bin": {
-    "monitor-cripto-on-mexc": "bin/monitor-cripto-on-mexc.js"
+    "ec2-instanceApp": "bin/ec2-instanceApp.js"
   },
   "scripts": {
     "build": "tsc",
@@ -22,10 +22,6 @@
   "dependencies": {
     "aws-cdk-lib": "2.154.1",
     "constructs": "^10.0.0",
-    "dotenv": "^16.4.5",
-    "node-telegram-bot-api": "^0.66.0",
-    "source-map-support": "^0.5.21",
-    "websocket": "^1.0.35",
-    "ws": "^8.18.0"
+    "dotenv": "^16.4.5"
   }
 }
