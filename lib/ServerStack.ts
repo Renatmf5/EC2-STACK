@@ -1,4 +1,4 @@
-import { RemovalPolicy, Duration, Stack } from 'aws-cdk-lib';
+import { RemovalPolicy, Duration, Stack, Tags, Tag } from 'aws-cdk-lib';
 import {
   Vpc,
   SecurityGroup,
@@ -27,6 +27,7 @@ import { Bucket, ObjectOwnership } from 'aws-cdk-lib/aws-s3';
 import { Source, BucketDeployment } from 'aws-cdk-lib/aws-s3-deployment';
 
 import { Construct } from 'constructs';
+
 
 interface ServerProps {
   vpc: Vpc;
@@ -92,7 +93,8 @@ export class ServerResources extends Construct {
     userData.addCommands(
       'yum update -y',
       'curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo',
-      'curl -sL https://rpm.nodesource.com/setup_18.x | sudo -E bash - ',
+      'curl -sL https://rpm.nodesource.com/setup_21.x | sudo -E bash - ',
+      'yum install -y nodejs',
       'yum install -y amazon-cloudwatch-agent nodejs python3-pip zip unzip docker yarn',
       'sudo systemctl enable docker',
       'sudo systemctl start docker',
@@ -100,6 +102,12 @@ export class ServerResources extends Construct {
       'aws s3 cp s3://' +
       assetBucket.bucketName +
       '/sample /home/ec2-user/sample --recursive',
+      'sudo yum -y install ruby',
+      'sudo yum -y install wget',
+      'cd /home/ec2-user',
+      'wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install',
+      'sudo chmod +x ./install',
+      'sudo ./install auto'
     );
 
     //Um grupo de segurança é criado para a instância EC2, permitindo o tráfego SSH.
@@ -181,5 +189,8 @@ export class ServerResources extends Construct {
 
     // Add the SSH Security Group to the EC2 instance
     this.instance.addSecurityGroup(props.sshSecurityGroup);
+
+    Tags.of(this.instance).add('Grupo', 'InstanceOfMonitor')
+
   }
 }

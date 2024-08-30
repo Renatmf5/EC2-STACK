@@ -6,6 +6,7 @@ import { Construct } from 'constructs';
 import { config } from 'dotenv';
 import { ServerResources, VPCResources } from '../lib';
 import { envValidator } from '../lib/envValidator';
+import { CICDStack } from '../lib/codepipeline-build-deploy-stack';
 
 config();
 
@@ -44,6 +45,12 @@ export class EC2App extends Stack {
     // SSH Command to connect to the EC2 Instance
     new CfnOutput(this, 'sshCommand', {
       value: `ssh ec2-user@${serverResources.instance.instancePublicDnsName}`,
+    });
+
+    // Criação do CodePipeline após a criação da EC2
+    new CICDStack(this, 'CICDStack', {
+      env: props.env,
+      // Pode passar o ID da instância como um parâmetro, se necessário
     });
   }
 }
