@@ -75,12 +75,17 @@ export class ServerResources extends Construct {
               resources: ['*'],
               actions: ['logs:PutRetentionPolicy'],
             }),
+            new PolicyStatement({
+              actions: ['s3:*', 'iam:PassRole'],
+              resources: ['*'],
+            }),
           ],
         }),
       },
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
         ManagedPolicy.fromAwsManagedPolicyName('CloudWatchAgentServerPolicy'),
+        ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMReadOnlyAccess'),
       ],
     });
 

@@ -7,6 +7,7 @@ import { config } from 'dotenv';
 import { ServerResources, VPCResources } from '../lib';
 import { envValidator } from '../lib/envValidator';
 import { CICDStack } from '../lib/codepipeline-build-deploy-stack';
+import { MyParameterStoreStack } from '../lib/ParameterStoreStack';
 
 config();
 
@@ -47,11 +48,10 @@ export class EC2App extends Stack {
       value: `ssh ec2-user@${serverResources.instance.instancePublicDnsName}`,
     });
 
-    // Criação do CodePipeline após a criação da EC2
-    new CICDStack(this, 'CICDStack', {
+    new MyParameterStoreStack(this, 'ParameterStack', {
       env: props.env,
-      // Pode passar o ID da instância como um parâmetro, se necessário
     });
+
   }
 }
 
@@ -69,9 +69,16 @@ const stackProps = {
 
 const app = new App();
 
-new EC2App(app, 'EC2App', {
+const ec2App = new EC2App(app, 'EC2App', {
   ...stackProps,
   env: devEnv,
 });
+
+const cicdStack = new CICDStack(app, 'CICDStack', {
+  env: devEnv,
+});
+
+// Adicione a dependência para garantir a ordem de criação
+cicdStack.addDependency(ec2App);
 
 app.synth();
